@@ -11,4 +11,28 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Shared\Domain\Repositories\" />
+      <Folder Include="Shared\Infrastructure\Persistence\EFC\Configuration\" />
+      <Folder Include="Shared\Interfaces\REST\Resources\" />
+      <Folder Include="TreatmentManagement\Application\External\ACL\" />
+      <Folder Include="TreatmentManagement\Application\Internal\CommandServices\" />
+      <Folder Include="TreatmentManagement\Application\Internal\EventHandlers\" />
+      <Folder Include="TreatmentManagement\Application\Internal\QueryServices\" />
+      <Folder Include="TreatmentManagement\Domain\Model\Aggregates\" />
+      <Folder Include="TreatmentManagement\Domain\Model\Entities\" />
+      <Folder Include="TreatmentManagement\Domain\Model\Events\" />
+      <Folder Include="TreatmentManagement\Domain\Model\Exceptions\" />
+      <Folder Include="TreatmentManagement\Domain\Model\ValueObjects\" />
+      <Folder Include="TreatmentManagement\Domain\Repositories\" />
+      <Folder Include="TreatmentManagement\Domain\Services\" />
+      <Folder Include="TreatmentManagement\Infrastructure\Clients\" />
+      <Folder Include="TreatmentManagement\Infrastructure\Events\" />
+      <Folder Include="TreatmentManagement\Infrastructure\Persistence\EFC\Configuration\" />
+      <Folder Include="TreatmentManagement\Infrastructure\Persistence\EFC\Repositories\" />
+      <Folder Include="TreatmentManagement\Interfaces\REST\Controllers\" />
+      <Folder Include="TreatmentManagement\Interfaces\REST\Resources\" />
+      <Folder Include="TreatmentManagement\Interfaces\REST\Transform\" />
+    </ItemGroup>
+
 </Project>
