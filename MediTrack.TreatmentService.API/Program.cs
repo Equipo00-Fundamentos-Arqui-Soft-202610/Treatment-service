@@ -28,6 +28,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
 builder.Services.AddScoped<IPrescriptionCommandService, PrescriptionCommandService>();
 
+builder.Services.AddScoped<IMedicationCatalogRepository, MedicationCatalogRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
