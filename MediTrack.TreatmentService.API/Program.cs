@@ -3,6 +3,7 @@ using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Repositories;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Services;
 using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC.Configuration;
 using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC.Repositories;
+using MediTrack.TreatmentService.API.TreatmentManagement.Application.Internal.OutboundServices;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -32,6 +33,8 @@ builder.Services.AddScoped<IMedicationCatalogRepository, MedicationCatalogReposi
 
 builder.Services.AddScoped<IClinicalRecordRepository, ClinicalRecordRepository>();
 builder.Services.AddScoped<IClinicalRecordCommandService, ClinicalRecordCommandService>();
+
+builder.Services.AddScoped<IPatientValidationClient, MockPatientValidationClient>();
 
 var app = builder.Build();
 

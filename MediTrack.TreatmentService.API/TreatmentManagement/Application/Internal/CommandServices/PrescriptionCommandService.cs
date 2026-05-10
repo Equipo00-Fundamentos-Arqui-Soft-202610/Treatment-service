@@ -1,4 +1,5 @@
-﻿using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Aggregates;
+﻿using MediTrack.TreatmentService.API.TreatmentManagement.Application.Internal.OutboundServices;
+using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Aggregates;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Commands;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Entities;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Repositories;
@@ -10,13 +11,16 @@ public class PrescriptionCommandService : IPrescriptionCommandService
 {
     private readonly IPrescriptionRepository _prescriptionRepository;
     private readonly IMedicationCatalogRepository _medicationCatalogRepository;
+    private readonly IPatientValidationClient _patientValidationClient;
 
     public PrescriptionCommandService(
         IPrescriptionRepository prescriptionRepository,
-        IMedicationCatalogRepository medicationCatalogRepository)
+        IMedicationCatalogRepository medicationCatalogRepository,
+        IPatientValidationClient patientValidationClient)
     {
         _prescriptionRepository = prescriptionRepository;
         _medicationCatalogRepository = medicationCatalogRepository;
+        _patientValidationClient = patientValidationClient;
     }
 
     public async Task<Prescription?> Handle(CreatePrescriptionCommand command)
@@ -59,6 +63,11 @@ public class PrescriptionCommandService : IPrescriptionCommandService
     {
         if (command.PatientId <= 0)
             throw new Exception("PatientId is required");
+
+        var patientExists = await _patientValidationClient.ExistsByIdAsync(command.PatientId);
+
+        if (!patientExists)
+            throw new Exception("Paciente no encontrado");
 
         if (command.TechnicalId <= 0)
             throw new Exception("TechnicalId is required");
