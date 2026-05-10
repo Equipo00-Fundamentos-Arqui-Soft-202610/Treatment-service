@@ -75,6 +75,9 @@ public class AppDbContext : DbContext
 
             entity.Property(m => m.StockAlertThre)
                 .IsRequired();
+            
+            entity.Property(m => m.IsActive)
+                .IsRequired();
 
             entity.HasOne(m => m.MedicationCatalog)
                 .WithMany(c => c.Medications)

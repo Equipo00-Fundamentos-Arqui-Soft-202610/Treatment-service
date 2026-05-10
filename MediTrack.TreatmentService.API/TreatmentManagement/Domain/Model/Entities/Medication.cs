@@ -13,6 +13,7 @@ public class Medication
     public DateTime? EndDate { get; private set; }
     public int StockCount { get; private set; }
     public int StockAlertThre { get; private set; }
+    public bool IsActive { get; private set; }
 
     public Prescription Prescription { get; private set; }
     public MedicationCatalog MedicationCatalog { get; private set; }
@@ -24,6 +25,7 @@ public class Medication
         Prescription = null!;
         MedicationCatalog = null!;
         DoseSchedules = new List<DoseSchedule>();
+        IsActive = true;
     }
 
     public Medication(
@@ -42,6 +44,28 @@ public class Medication
         EndDate = endDate;
         StockCount = stockCount;
         StockAlertThre = stockAlertThre;
+        IsActive = true;
         DoseSchedules = new List<DoseSchedule>();
+    }
+
+    public void Update(
+        string dose,
+        int frequencyHour,
+        DateTime startDate,
+        DateTime? endDate,
+        int stockCount,
+        int stockAlertThre)
+    {
+        Dose = dose;
+        FrequencyHour = frequencyHour;
+        StartDate = startDate;
+        EndDate = endDate;
+        StockCount = stockCount;
+        StockAlertThre = stockAlertThre;
+    }
+
+    public void Cancel()
+    {
+        IsActive = false;
     }
 }

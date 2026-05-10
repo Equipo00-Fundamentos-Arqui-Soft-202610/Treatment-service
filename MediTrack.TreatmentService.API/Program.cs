@@ -40,6 +40,9 @@ builder.Services.AddScoped<IPatientValidationClient, MockPatientValidationClient
 builder.Services.AddScoped<IPatientSearchClient, MockPatientSearchClient>();
 builder.Services.AddScoped<IPatientQueryService, PatientQueryService>();
 
+builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
+builder.Services.AddScoped<IMedicationCommandService, MedicationCommandService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
