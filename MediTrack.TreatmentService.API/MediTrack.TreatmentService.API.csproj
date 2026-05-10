@@ -28,7 +28,6 @@
       <Folder Include="Shared\Interfaces\REST\Resources\" />
       <Folder Include="TreatmentManagement\Application\External\ACL\" />
       <Folder Include="TreatmentManagement\Application\Internal\EventHandlers\" />
-      <Folder Include="TreatmentManagement\Application\Internal\QueryServices\" />
       <Folder Include="TreatmentManagement\Domain\Model\Events\" />
       <Folder Include="TreatmentManagement\Domain\Model\Exceptions\" />
       <Folder Include="TreatmentManagement\Domain\Model\ValueObjects\" />
