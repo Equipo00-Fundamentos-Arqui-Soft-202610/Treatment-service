@@ -15,7 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<Medication> Medications => Set<Medication>();
     public DbSet<DoseSchedule> DoseSchedules => Set<DoseSchedule>();
     public DbSet<MedicationCatalog> MedicationCatalog => Set<MedicationCatalog>();
-    public DbSet<ClinicalRecord> ClinicalRecords => Set<ClinicalRecord>();
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -124,33 +124,6 @@ public class AppDbContext : DbContext
                 .HasMaxLength(100);
         });
         
-        builder.Entity<ClinicalRecord>(entity =>
-        {
-            entity.ToTable("clinical_records");
-
-            entity.HasKey(cr => cr.Id);
-
-            entity.Property(cr => cr.Id)
-                .ValueGeneratedOnAdd();
-
-            entity.Property(cr => cr.PatientId)
-                .IsRequired();
-
-            entity.Property(cr => cr.UploadedBy)
-                .IsRequired();
-
-            entity.Property(cr => cr.DatasetSource)
-                .HasMaxLength(255);
-
-            entity.Property(cr => cr.FileUrl)
-                .HasMaxLength(500);
-
-            entity.Property(cr => cr.ProcessingStatus)
-                .HasMaxLength(50)
-                .IsRequired();
-
-            entity.Property(cr => cr.UploadedAt)
-                .IsRequired();
-        });
+        
     }
 }
