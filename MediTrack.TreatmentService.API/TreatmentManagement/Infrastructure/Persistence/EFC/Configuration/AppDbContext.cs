@@ -34,7 +34,6 @@ public class AppDbContext : DbContext
                 .IsRequired();
 
             entity.Property(p => p.TechnicalStaffId)
-                .HasColumnName("technical_staff_id")
                 .IsRequired();
 
             entity.Property(p => p.Status)
@@ -66,7 +65,6 @@ public class AppDbContext : DbContext
                 .IsRequired();
 
             entity.Property(m => m.FrequencyHours)
-                .HasColumnName("frequency_hours")
                 .IsRequired();
 
             entity.Property(m => m.StartDate)
@@ -76,7 +74,6 @@ public class AppDbContext : DbContext
                 .IsRequired();
 
             entity.Property(m => m.StockAlertThreshold)
-                .HasColumnName("stock_alert_threshold")
                 .IsRequired();
             
 
