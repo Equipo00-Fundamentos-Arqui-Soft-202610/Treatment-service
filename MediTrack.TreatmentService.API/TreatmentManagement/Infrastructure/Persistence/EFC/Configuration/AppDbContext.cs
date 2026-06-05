@@ -33,7 +33,8 @@ public class AppDbContext : DbContext
             entity.Property(p => p.PatientId)
                 .IsRequired();
 
-            entity.Property(p => p.TechnicalId)
+            entity.Property(p => p.TechnicalStaffId)
+                .HasColumnName("technical_staff_id")
                 .IsRequired();
 
             entity.Property(p => p.Status)
@@ -64,7 +65,8 @@ public class AppDbContext : DbContext
                 .HasMaxLength(50)
                 .IsRequired();
 
-            entity.Property(m => m.FrequencyHour)
+            entity.Property(m => m.FrequencyHours)
+                .HasColumnName("frequency_hours")
                 .IsRequired();
 
             entity.Property(m => m.StartDate)
@@ -73,11 +75,10 @@ public class AppDbContext : DbContext
             entity.Property(m => m.StockCount)
                 .IsRequired();
 
-            entity.Property(m => m.StockAlertThre)
+            entity.Property(m => m.StockAlertThreshold)
+                .HasColumnName("stock_alert_threshold")
                 .IsRequired();
             
-            entity.Property(m => m.IsActive)
-                .IsRequired();
 
             entity.HasOne(m => m.MedicationCatalog)
                 .WithMany(c => c.Medications)

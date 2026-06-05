@@ -8,12 +8,11 @@ public class Medication
     public int PrescriptionId { get; private set; }
     public int CatalogId { get; private set; }
     public string Dose { get; private set; }
-    public int FrequencyHour { get; private set; }
+    public int FrequencyHours { get; private set; }
     public DateTime StartDate { get; private set; }
     public DateTime? EndDate { get; private set; }
     public int StockCount { get; private set; }
-    public int StockAlertThre { get; private set; }
-    public bool IsActive { get; private set; }
+    public int StockAlertThreshold { get; private set; }
 
     public Prescription Prescription { get; private set; }
     public MedicationCatalog MedicationCatalog { get; private set; }
@@ -25,47 +24,40 @@ public class Medication
         Prescription = null!;
         MedicationCatalog = null!;
         DoseSchedules = new List<DoseSchedule>();
-        IsActive = true;
     }
 
     public Medication(
         int catalogId,
         string dose,
-        int frequencyHour,
+        int frequencyHours,
         DateTime startDate,
         DateTime? endDate,
         int stockCount,
-        int stockAlertThre)
+        int stockAlertThreshold)
     {
         CatalogId = catalogId;
         Dose = dose;
-        FrequencyHour = frequencyHour;
+        FrequencyHours = frequencyHours;
         StartDate = startDate;
         EndDate = endDate;
         StockCount = stockCount;
-        StockAlertThre = stockAlertThre;
-        IsActive = true;
+        StockAlertThreshold = stockAlertThreshold;
         DoseSchedules = new List<DoseSchedule>();
     }
 
     public void Update(
         string dose,
-        int frequencyHour,
+        int frequencyHours,
         DateTime startDate,
         DateTime? endDate,
         int stockCount,
-        int stockAlertThre)
+        int stockAlertThreshold)
     {
         Dose = dose;
-        FrequencyHour = frequencyHour;
+        FrequencyHours = frequencyHours;
         StartDate = startDate;
         EndDate = endDate;
         StockCount = stockCount;
-        StockAlertThre = stockAlertThre;
-    }
-
-    public void Cancel()
-    {
-        IsActive = false;
+        StockAlertThreshold = stockAlertThreshold;
     }
 }

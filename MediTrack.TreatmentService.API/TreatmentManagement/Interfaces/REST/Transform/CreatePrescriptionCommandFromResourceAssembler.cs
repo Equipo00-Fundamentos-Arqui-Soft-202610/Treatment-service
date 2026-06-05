@@ -9,17 +9,17 @@ public static class CreatePrescriptionCommandFromResourceAssembler
     {
         return new CreatePrescriptionCommand(
             resource.PatientId,
-            resource.TechnicalId,
+            resource.TechnicalStaffId,
             resource.Notes,
             resource.Medications.Select(medication =>
                 new CreateMedicationCommand(
                     medication.CatalogId,
                     medication.Dose,
-                    medication.FrequencyHour,
+                    medication.FrequencyHours,
                     medication.StartDate,
                     medication.EndDate,
                     medication.StockCount,
-                    medication.StockAlertThre,
+                    medication.StockAlertThreshold,
                     medication.DoseSchedules.Select(schedule =>
                         new CreateDoseScheduleCommand(
                             schedule.ScheduledTime

@@ -3,10 +3,10 @@
 public record CreateMedicationResource(
     int CatalogId,
     string Dose,
-    int FrequencyHour,
+    int FrequencyHours,
     DateTime StartDate,
     DateTime? EndDate,
     int StockCount,
-    int StockAlertThre,
+    int StockAlertThreshold,
     List<CreateDoseScheduleResource> DoseSchedules
 );

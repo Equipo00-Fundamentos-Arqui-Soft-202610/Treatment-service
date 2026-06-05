@@ -36,12 +36,11 @@ public class MedicationsController : ControllerBase
                 medication.PrescriptionId,
                 medication.CatalogId,
                 medication.Dose,
-                medication.FrequencyHour,
+                medication.FrequencyHours,
                 medication.StartDate,
                 medication.EndDate,
                 medication.StockCount,
-                medication.StockAlertThre,
-                medication.IsActive
+                medication.StockAlertThreshold,
             });
         }
         catch (Exception ex)
@@ -73,12 +72,11 @@ public class MedicationsController : ControllerBase
                 medication.PrescriptionId,
                 medication.CatalogId,
                 medication.Dose,
-                medication.FrequencyHour,
+                medication.FrequencyHours,
                 medication.StartDate,
                 medication.EndDate,
                 medication.StockCount,
-                medication.StockAlertThre,
-                medication.IsActive
+                medication.StockAlertThreshold,
             });
         }
         catch (Exception ex)

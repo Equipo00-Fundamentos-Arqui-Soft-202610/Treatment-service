@@ -3,10 +3,10 @@
 public record UpdateMedicationCommand(
     int MedicationId,
     string Dose,
-    int FrequencyHour,
+    int FrequencyHours,
     DateTime StartDate,
     DateTime? EndDate,
     int StockCount,
-    int StockAlertThre,
+    int StockAlertThreshold,
     bool AuthorizedByTechnicalStaff
 );

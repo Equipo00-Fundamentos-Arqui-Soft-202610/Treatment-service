@@ -28,11 +28,11 @@ public class MedicationCommandService : IMedicationCommandService
 
         medication.Update(
             command.Dose,
-            command.FrequencyHour,
+            command.FrequencyHours,
             command.StartDate,
             command.EndDate,
             command.StockCount,
-            command.StockAlertThre
+            command.StockAlertThreshold
         );
 
         await _medicationRepository.UpdateAsync(medication);
@@ -49,8 +49,7 @@ public class MedicationCommandService : IMedicationCommandService
 
         if (medication is null)
             throw new Exception("Medication not found");
-
-        medication.Cancel();
+        
 
         await _medicationRepository.UpdateAsync(medication);
 
@@ -65,7 +64,7 @@ public class MedicationCommandService : IMedicationCommandService
         if (string.IsNullOrWhiteSpace(command.Dose))
             throw new Exception("Dose is required");
 
-        if (command.FrequencyHour <= 0)
+        if (command.FrequencyHours <= 0)
             throw new Exception("Frequency hour must be greater than zero");
 
         if (command.StartDate == default)
@@ -77,7 +76,7 @@ public class MedicationCommandService : IMedicationCommandService
         if (command.StockCount < 0)
             throw new Exception("Stock count cannot be negative");
 
-        if (command.StockAlertThre < 0)
+        if (command.StockAlertThreshold < 0)
             throw new Exception("Stock alert threshold cannot be negative");
     }
 }

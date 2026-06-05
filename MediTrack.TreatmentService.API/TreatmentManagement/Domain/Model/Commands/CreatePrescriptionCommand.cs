@@ -2,7 +2,7 @@
 
 public record CreatePrescriptionCommand(
     int PatientId,
-    int TechnicalId,
+    int TechnicalStaffId,
     string? Notes,
     List<CreateMedicationCommand> Medications
 );
@@ -10,11 +10,11 @@ public record CreatePrescriptionCommand(
 public record CreateMedicationCommand(
     int CatalogId,
     string Dose,
-    int FrequencyHour,
+    int FrequencyHours,
     DateTime StartDate,
     DateTime? EndDate,
     int StockCount,
-    int StockAlertThre,
+    int StockAlertThreshold,
     List<CreateDoseScheduleCommand> DoseSchedules
 );
 

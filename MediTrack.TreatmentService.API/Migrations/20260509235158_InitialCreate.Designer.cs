@@ -43,7 +43,7 @@ namespace MediTrack.TreatmentService.API.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
-                    b.Property<int>("TechnicalId")
+                    b.Property<int>("TechnicalStaffId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -90,7 +90,7 @@ namespace MediTrack.TreatmentService.API.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("FrequencyHour")
+                    b.Property<int>("FrequencyHours")
                         .HasColumnType("int");
 
                     b.Property<int>("PrescriptionId")
@@ -99,7 +99,7 @@ namespace MediTrack.TreatmentService.API.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("StockAlertThre")
+                    b.Property<int>("StockAlertThreshold")
                         .HasColumnType("int");
 
                     b.Property<int>("StockCount")

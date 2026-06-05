@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MediTrack.TreatmentService.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+988b7e0d5047370b2175e274b2594ab77c92d859")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e6ff22327c0c26ed15ce406a856d692a7755c09d")]
 [assembly: System.Reflection.AssemblyProductAttribute("MediTrack.TreatmentService.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MediTrack.TreatmentService.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

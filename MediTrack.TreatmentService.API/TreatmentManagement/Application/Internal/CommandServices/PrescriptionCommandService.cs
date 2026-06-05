@@ -29,7 +29,7 @@ public class PrescriptionCommandService : IPrescriptionCommandService
 
         var prescription = new Prescription(
             command.PatientId,
-            command.TechnicalId,
+            command.TechnicalStaffId,
             command.Notes
         );
 
@@ -38,11 +38,11 @@ public class PrescriptionCommandService : IPrescriptionCommandService
             var medication = new Medication(
                 medicationCommand.CatalogId,
                 medicationCommand.Dose,
-                medicationCommand.FrequencyHour,
+                medicationCommand.FrequencyHours,
                 medicationCommand.StartDate,
                 medicationCommand.EndDate,
                 medicationCommand.StockCount,
-                medicationCommand.StockAlertThre
+                medicationCommand.StockAlertThreshold
             );
 
             foreach (var scheduleCommand in medicationCommand.DoseSchedules)
@@ -69,7 +69,7 @@ public class PrescriptionCommandService : IPrescriptionCommandService
         if (!patientExists)
             throw new Exception("Paciente no encontrado");
 
-        if (command.TechnicalId <= 0)
+        if (command.TechnicalStaffId <= 0)
             throw new Exception("TechnicalId is required");
 
         if (command.Medications == null || !command.Medications.Any())
@@ -88,7 +88,7 @@ public class PrescriptionCommandService : IPrescriptionCommandService
             if (string.IsNullOrWhiteSpace(medication.Dose))
                 throw new Exception("Dose is required");
 
-            if (medication.FrequencyHour <= 0)
+            if (medication.FrequencyHours <= 0)
                 throw new Exception("Frequency hour must be greater than zero");
 
             if (medication.StartDate == default)
@@ -100,7 +100,7 @@ public class PrescriptionCommandService : IPrescriptionCommandService
             if (medication.StockCount < 0)
                 throw new Exception("Stock count cannot be negative");
 
-            if (medication.StockAlertThre < 0)
+            if (medication.StockAlertThreshold < 0)
                 throw new Exception("Stock alert threshold cannot be negative");
 
             if (medication.DoseSchedules == null || !medication.DoseSchedules.Any())
