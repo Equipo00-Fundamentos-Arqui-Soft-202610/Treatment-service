@@ -10,10 +10,26 @@ namespace MediTrack.TreatmentService.API.TreatmentManagement.Interfaces.REST.Con
 public class MedicationsController : ControllerBase
 {
     private readonly IMedicationCommandService _medicationCommandService;
+    private readonly IMedicationQueryService _medicationQueryService;
 
-    public MedicationsController(IMedicationCommandService medicationCommandService)
+    public MedicationsController(
+        IMedicationCommandService medicationCommandService,
+        IMedicationQueryService medicationQueryService)
     {
         _medicationCommandService = medicationCommandService;
+        _medicationQueryService = medicationQueryService;
+    }
+
+    [HttpGet("patient/{patientId:int}")]
+    public async Task<IActionResult> GetMedicationsByPatientId(int patientId)
+    {
+        var medications = await _medicationQueryService.GetMedicationsByPatientIdAsync(patientId);
+
+        var resources = medications
+            .Select(MedicationResourceFromEntityAssembler.ToResourceFromEntity)
+            .ToList();
+
+        return Ok(resources);
     }
 
     [HttpPut("{medicationId:int}")]

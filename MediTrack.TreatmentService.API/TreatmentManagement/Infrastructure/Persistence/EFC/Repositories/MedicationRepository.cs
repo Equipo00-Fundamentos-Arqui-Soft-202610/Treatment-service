@@ -19,6 +19,16 @@ public class MedicationRepository : IMedicationRepository
         return await _context.Medications
             .FirstOrDefaultAsync(medication => medication.Id == id);
     }
+    
+    public async Task<IEnumerable<Medication>> FindByPatientIdAsync(int patientId)
+    {
+        return await _context.Medications
+            .Include(medication => medication.Prescription)
+            .Include(medication => medication.MedicationCatalog)
+            .Include(medication => medication.DoseSchedules)
+            .Where(medication => medication.Prescription.PatientId == patientId)
+            .ToListAsync();
+    }
 
     public async Task UpdateAsync(Medication medication)
     {
