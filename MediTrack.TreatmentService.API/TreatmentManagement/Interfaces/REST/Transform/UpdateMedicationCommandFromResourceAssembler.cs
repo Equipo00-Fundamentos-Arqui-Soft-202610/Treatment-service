@@ -10,11 +10,11 @@ public static class UpdateMedicationCommandFromResourceAssembler
         return new UpdateMedicationCommand(
             medicationId,
             resource.Dose,
-            resource.FrequencyHour,
+            resource.FrequencyHours,
             resource.StartDate,
             resource.EndDate,
             resource.StockCount,
-            resource.StockAlertThre,
+            resource.StockAlertThreshold,
             resource.AuthorizedByTechnicalStaff
         );
     }

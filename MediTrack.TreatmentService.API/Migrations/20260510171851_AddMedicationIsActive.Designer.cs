@@ -43,7 +43,7 @@ namespace MediTrack.TreatmentService.API.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
-                    b.Property<int>("TechnicalId")
+                    b.Property<int>("TechnicalStaffId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -51,38 +51,7 @@ namespace MediTrack.TreatmentService.API.Migrations
                     b.ToTable("prescriptions", (string)null);
                 });
 
-            modelBuilder.Entity("MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Entities.ClinicalRecord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("DatasetSource")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("FileUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProcessingStatus")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("UploadedBy")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("clinical_records", (string)null);
-                });
+            
 
             modelBuilder.Entity("MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Entities.DoseSchedule", b =>
                 {
@@ -123,7 +92,7 @@ namespace MediTrack.TreatmentService.API.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("FrequencyHour")
+                    b.Property<int>("FrequencyHours")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
@@ -135,7 +104,7 @@ namespace MediTrack.TreatmentService.API.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("StockAlertThre")
+                    b.Property<int>("StockAlertThreshold")
                         .HasColumnType("int");
 
                     b.Property<int>("StockCount")

@@ -2,7 +2,7 @@
 
 public record CreatePrescriptionResource(
     int PatientId,
-    int TechnicalId,
+    int TechnicalStaffId,
     string? Notes,
     List<CreateMedicationResource> Medications
 );

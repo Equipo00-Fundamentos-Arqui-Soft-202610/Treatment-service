@@ -32,8 +32,6 @@ builder.Services.AddScoped<IPrescriptionCommandService, PrescriptionCommandServi
 
 builder.Services.AddScoped<IMedicationCatalogRepository, MedicationCatalogRepository>();
 
-builder.Services.AddScoped<IClinicalRecordRepository, ClinicalRecordRepository>();
-builder.Services.AddScoped<IClinicalRecordCommandService, ClinicalRecordCommandService>();
 
 builder.Services.AddScoped<IPatientValidationClient, MockPatientValidationClient>();
 

@@ -15,7 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<Medication> Medications => Set<Medication>();
     public DbSet<DoseSchedule> DoseSchedules => Set<DoseSchedule>();
     public DbSet<MedicationCatalog> MedicationCatalog => Set<MedicationCatalog>();
-    public DbSet<ClinicalRecord> ClinicalRecords => Set<ClinicalRecord>();
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -33,7 +33,7 @@ public class AppDbContext : DbContext
             entity.Property(p => p.PatientId)
                 .IsRequired();
 
-            entity.Property(p => p.TechnicalId)
+            entity.Property(p => p.TechnicalStaffId)
                 .IsRequired();
 
             entity.Property(p => p.Status)
@@ -64,7 +64,7 @@ public class AppDbContext : DbContext
                 .HasMaxLength(50)
                 .IsRequired();
 
-            entity.Property(m => m.FrequencyHour)
+            entity.Property(m => m.FrequencyHours)
                 .IsRequired();
 
             entity.Property(m => m.StartDate)
@@ -73,11 +73,9 @@ public class AppDbContext : DbContext
             entity.Property(m => m.StockCount)
                 .IsRequired();
 
-            entity.Property(m => m.StockAlertThre)
+            entity.Property(m => m.StockAlertThreshold)
                 .IsRequired();
             
-            entity.Property(m => m.IsActive)
-                .IsRequired();
 
             entity.HasOne(m => m.MedicationCatalog)
                 .WithMany(c => c.Medications)
@@ -124,33 +122,6 @@ public class AppDbContext : DbContext
                 .HasMaxLength(100);
         });
         
-        builder.Entity<ClinicalRecord>(entity =>
-        {
-            entity.ToTable("clinical_records");
-
-            entity.HasKey(cr => cr.Id);
-
-            entity.Property(cr => cr.Id)
-                .ValueGeneratedOnAdd();
-
-            entity.Property(cr => cr.PatientId)
-                .IsRequired();
-
-            entity.Property(cr => cr.UploadedBy)
-                .IsRequired();
-
-            entity.Property(cr => cr.DatasetSource)
-                .HasMaxLength(255);
-
-            entity.Property(cr => cr.FileUrl)
-                .HasMaxLength(500);
-
-            entity.Property(cr => cr.ProcessingStatus)
-                .HasMaxLength(50)
-                .IsRequired();
-
-            entity.Property(cr => cr.UploadedAt)
-                .IsRequired();
-        });
+        
     }
 }

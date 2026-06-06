@@ -38,7 +38,7 @@ namespace MediTrack.TreatmentService.API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     PatientId = table.Column<int>(type: "int", nullable: false),
-                    TechnicalId = table.Column<int>(type: "int", nullable: false),
+                    TechnicalStaffId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false),
                     Notes = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
@@ -58,11 +58,11 @@ namespace MediTrack.TreatmentService.API.Migrations
                     PrescriptionId = table.Column<int>(type: "int", nullable: false),
                     CatalogId = table.Column<int>(type: "int", nullable: false),
                     Dose = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
-                    FrequencyHour = table.Column<int>(type: "int", nullable: false),
+                    FrequencyHours = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     StockCount = table.Column<int>(type: "int", nullable: false),
-                    StockAlertThre = table.Column<int>(type: "int", nullable: false)
+                    StockAlertThreshold = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

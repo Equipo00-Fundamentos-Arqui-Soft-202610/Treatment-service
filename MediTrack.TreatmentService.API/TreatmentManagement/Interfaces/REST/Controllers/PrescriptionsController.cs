@@ -32,7 +32,7 @@ public class PrescriptionsController : ControllerBase
             {
                 prescription.Id,
                 prescription.PatientId,
-                prescription.TechnicalId,
+                prescription.TechnicalStaffId,
                 prescription.Status,
                 prescription.Notes,
                 prescription.CreatedAt
