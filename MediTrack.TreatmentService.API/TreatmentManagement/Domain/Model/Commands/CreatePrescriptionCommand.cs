@@ -19,5 +19,5 @@ public record CreateMedicationCommand(
 );
 
 public record CreateDoseScheduleCommand(
-    TimeOnly ScheduledTime
+    TimeSpan ScheduledTime
 );

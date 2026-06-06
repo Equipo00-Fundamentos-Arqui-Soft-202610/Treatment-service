@@ -41,6 +41,8 @@ builder.Services.AddScoped<IPatientQueryService, PatientQueryService>();
 builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
 builder.Services.AddScoped<IMedicationCommandService, MedicationCommandService>();
 
+builder.Services.AddScoped<IMedicationQueryService, MedicationQueryService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
