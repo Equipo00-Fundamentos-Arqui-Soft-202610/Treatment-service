@@ -96,6 +96,7 @@ public class AppDbContext : DbContext
                 .ValueGeneratedOnAdd();
 
             entity.Property(ds => ds.ScheduledTime)
+                .HasColumnType("time")
                 .IsRequired();
 
             entity.Property(ds => ds.IsActive)
