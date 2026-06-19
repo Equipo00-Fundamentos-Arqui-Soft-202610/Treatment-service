@@ -20,8 +20,8 @@ public class MedicationsController : ControllerBase
         _medicationQueryService = medicationQueryService;
     }
 
-    [HttpGet("patient/{patientId:int}")]
-    public async Task<IActionResult> GetMedicationsByPatientId(int patientId)
+    [HttpGet]
+    public async Task<IActionResult> GetMedicationsByPatientId([FromQuery] int patientId)
     {
         var medications = await _medicationQueryService.GetMedicationsByPatientIdAsync(patientId);
 
