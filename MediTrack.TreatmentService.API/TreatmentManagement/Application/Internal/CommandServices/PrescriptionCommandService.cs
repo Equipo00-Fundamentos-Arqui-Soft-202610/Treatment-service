@@ -103,6 +103,51 @@ public class PrescriptionCommandService : IPrescriptionCommandService
             };
 
             await _eventPublisher.PublishAsync("PrescriptionCreated", integrationEvent);
+
+            // Publish RecetaCargada event with concrete dose occurrences
+            var limaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
+            var now = DateTime.UtcNow;
+            var occurrences = new List<DoseOccurrenceDto>();
+
+            foreach (var med in prescription.Medications)
+            {
+                var medicationName = catalogNames.GetValueOrDefault(med.CatalogId, "Unknown");
+                var rangeEnd = med.EndDate?.Date ?? med.StartDate.Date.AddDays(30);
+
+                for (var day = med.StartDate.Date; day <= rangeEnd; day = day.AddDays(1))
+                {
+                    foreach (var schedule in med.DoseSchedules.Where(s => s.IsActive))
+                    {
+                        var localDateTime = day.Add(schedule.ScheduledTime);
+                        var utcDateTime = TimeZoneInfo.ConvertTimeToUtc(
+                            DateTime.SpecifyKind(localDateTime, DateTimeKind.Unspecified),
+                            limaTimeZone);
+
+                        if (utcDateTime < now)
+                            continue;
+
+                        occurrences.Add(new DoseOccurrenceDto(med.Id, medicationName, med.Dose, utcDateTime));
+                    }
+                }
+            }
+
+            if (occurrences.Count > 0)
+            {
+                try
+                {
+                    await _eventPublisher.PublishAsync("RecetaCargada", new RecetaCargadaEvent
+                    {
+                        PatientId = prescription.PatientId,
+                        PrescriptionId = prescription.Id,
+                        Medications = occurrences
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to publish RecetaCargada event for PrescriptionId {PrescriptionId}",
+                        prescription.Id);
+                }
+            }
         }
         catch (Exception ex)
         {
