@@ -1,9 +1,11 @@
 ﻿using MediTrack.TreatmentService.API.TreatmentManagement.Application.Internal.OutboundServices;
+using MediTrack.TreatmentService.API.TreatmentManagement.Application.OutboundEvents;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Aggregates;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Commands;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Entities;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Repositories;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Services;
+using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Messaging;
 
 namespace MediTrack.TreatmentService.API.TreatmentManagement.Application.Internal.CommandServices;
 
@@ -12,15 +14,21 @@ public class PrescriptionCommandService : IPrescriptionCommandService
     private readonly IPrescriptionRepository _prescriptionRepository;
     private readonly IMedicationCatalogRepository _medicationCatalogRepository;
     private readonly IPatientValidationClient _patientValidationClient;
+    private readonly IEventPublisher _eventPublisher;
+    private readonly ILogger<PrescriptionCommandService> _logger;
 
     public PrescriptionCommandService(
         IPrescriptionRepository prescriptionRepository,
         IMedicationCatalogRepository medicationCatalogRepository,
-        IPatientValidationClient patientValidationClient)
+        IPatientValidationClient patientValidationClient,
+        IEventPublisher eventPublisher,
+        ILogger<PrescriptionCommandService> logger)
     {
         _prescriptionRepository = prescriptionRepository;
         _medicationCatalogRepository = medicationCatalogRepository;
         _patientValidationClient = patientValidationClient;
+        _eventPublisher = eventPublisher;
+        _logger = logger;
     }
 
     public async Task<Prescription?> Handle(CreatePrescriptionCommand command)
@@ -56,7 +64,96 @@ public class PrescriptionCommandService : IPrescriptionCommandService
 
         await _prescriptionRepository.AddAsync(prescription);
 
+        await PublishPrescriptionCreatedEventAsync(prescription);
+
         return prescription;
+    }
+
+    private async Task PublishPrescriptionCreatedEventAsync(Prescription prescription)
+    {
+        try
+        {
+            var catalogs = await _medicationCatalogRepository.FindAllAsync();
+            var catalogNames = catalogs.ToDictionary(c => c.Id, c => c.OfficialName);
+
+            var medications = prescription.Medications.Select(med => new MedicationCreatedDto(
+                med.Id,
+                prescription.PatientId,
+                prescription.Id,
+                med.CatalogId,
+                catalogNames.GetValueOrDefault(med.CatalogId, "Unknown"),
+                med.Dose,
+                med.FrequencyHours,
+                med.StartDate,
+                med.EndDate,
+                med.StockCount,
+                med.StockAlertThreshold,
+                med.DoseSchedules.Select(schedule => new DoseScheduleCreatedDto(
+                    schedule.Id,
+                    schedule.ScheduledTime,
+                    schedule.IsActive
+                )).ToList()
+            )).ToList();
+
+            var integrationEvent = new PrescriptionCreatedEvent
+            {
+                PrescriptionId = prescription.Id,
+                PatientId = prescription.PatientId,
+                Medications = medications
+            };
+
+            await _eventPublisher.PublishAsync("PrescriptionCreated", integrationEvent);
+
+            // Publish RecetaCargada event with concrete dose occurrences
+            var limaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
+            var now = DateTime.UtcNow;
+            var occurrences = new List<DoseOccurrenceDto>();
+
+            foreach (var med in prescription.Medications)
+            {
+                var medicationName = catalogNames.GetValueOrDefault(med.CatalogId, "Unknown");
+                var rangeEnd = med.EndDate?.Date ?? med.StartDate.Date.AddDays(30);
+
+                for (var day = med.StartDate.Date; day <= rangeEnd; day = day.AddDays(1))
+                {
+                    foreach (var schedule in med.DoseSchedules.Where(s => s.IsActive))
+                    {
+                        var localDateTime = day.Add(schedule.ScheduledTime);
+                        var utcDateTime = TimeZoneInfo.ConvertTimeToUtc(
+                            DateTime.SpecifyKind(localDateTime, DateTimeKind.Unspecified),
+                            limaTimeZone);
+
+                        if (utcDateTime < now)
+                            continue;
+
+                        occurrences.Add(new DoseOccurrenceDto(med.Id, medicationName, med.Dose, utcDateTime));
+                    }
+                }
+            }
+
+            if (occurrences.Count > 0)
+            {
+                try
+                {
+                    await _eventPublisher.PublishAsync("RecetaCargada", new RecetaCargadaEvent
+                    {
+                        PatientId = prescription.PatientId,
+                        PrescriptionId = prescription.Id,
+                        Medications = occurrences
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to publish RecetaCargada event for PrescriptionId {PrescriptionId}",
+                        prescription.Id);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to publish PrescriptionCreated event for PrescriptionId {PrescriptionId}. Prescription was saved successfully.",
+                prescription.Id);
+        }
     }
 
     private async Task ValidateCommand(CreatePrescriptionCommand command)

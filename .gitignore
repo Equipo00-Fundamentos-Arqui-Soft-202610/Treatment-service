@@ -1,15 +1,20 @@
-﻿.idea/
-.vscode/
-
-
-# Build results
-bin/
+﻿bin/
 obj/
+
+
+# Rider/Visual Studio cache
+.idea/
+.vs/
+*.DotSettings.user
+
+*.certs/
+certs/*
 
 # User-specific files
 *.user
-*.userosscache
 *.suo
+*.userosscache
+*.sln.docstates
 
 # Build outputs
 [Dd]ebug/
@@ -36,3 +41,9 @@ ScaffoldingReadMe.txt
 *.db-wal
 *.sqlite
 *.sqlite3
+# .NET build artifacts
+**/bin/
+**/obj/
+
+
+

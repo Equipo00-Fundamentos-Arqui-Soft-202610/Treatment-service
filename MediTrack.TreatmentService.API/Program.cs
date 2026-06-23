@@ -1,6 +1,7 @@
 using MediTrack.TreatmentService.API.TreatmentManagement.Application.Internal.CommandServices;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Repositories;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Services;
+using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Messaging;
 using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC.Configuration;
 using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC.Repositories;
 using MediTrack.TreatmentService.API.TreatmentManagement.Application.Internal.OutboundServices;
@@ -31,6 +32,8 @@ builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
 builder.Services.AddScoped<IPrescriptionCommandService, PrescriptionCommandService>();
 
 builder.Services.AddScoped<IMedicationCatalogRepository, MedicationCatalogRepository>();
+builder.Services.AddScoped<IMedicationCatalogCommandService, MedicationCatalogCommandService>();
+builder.Services.AddScoped<IMedicationCatalogQueryService, MedicationCatalogQueryService>();
 
 
 builder.Services.AddScoped<IPatientValidationClient, MockPatientValidationClient>();
@@ -42,6 +45,9 @@ builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
 builder.Services.AddScoped<IMedicationCommandService, MedicationCommandService>();
 
 builder.Services.AddScoped<IMedicationQueryService, MedicationQueryService>();
+
+// Messaging
+builder.Services.AddSingleton<IEventPublisher, RabbitMqPublisher>();
 
 var app = builder.Build();
 
