@@ -1,6 +1,38 @@
-﻿bin/
+﻿.idea/
+.vscode/
+
+
+# Build results
+bin/
 obj/
-.idea/
-.vs/
+
+# User-specific files
 *.user
+*.userosscache
 *.suo
+
+# Build outputs
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
