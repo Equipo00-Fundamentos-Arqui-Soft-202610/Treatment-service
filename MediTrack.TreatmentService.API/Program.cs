@@ -51,6 +51,13 @@ builder.Services.AddSingleton<IEventPublisher, RabbitMqPublisher>();
 
 var app = builder.Build();
 
+// Auto-migrate: crea la base de datos y aplica migraciones pendientes al arrancar
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
+}
+
 // Configure the HTTP request pipeline.
 
 if (app.Environment.IsDevelopment())
