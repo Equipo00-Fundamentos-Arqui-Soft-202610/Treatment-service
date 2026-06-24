@@ -9,6 +9,6 @@ public class MockPatientValidationClient : IPatientValidationClient
         // Temporary rule for local development:
         // patientId = 1 exists, any other patientId does not exist.
 
-        return Task.FromResult(patientId == 1);
+        return Task.FromResult(patientId >= 1 && patientId <= 10);
     }
 }
