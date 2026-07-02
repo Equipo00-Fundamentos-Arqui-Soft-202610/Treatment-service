@@ -19,6 +19,7 @@ public static class MedicationResourceFromEntityAssembler
             entity.EndDate,
             entity.StockCount,
             entity.StockAlertThreshold,
+            entity.IsActive,
             entity.DoseSchedules
                 .Where(schedule => schedule.IsActive)
                 .Select(schedule => schedule.ScheduledTime.ToString(@"hh\:mm"))

@@ -13,6 +13,7 @@ public class Medication
     public DateTime? EndDate { get; private set; }
     public int StockCount { get; private set; }
     public int StockAlertThreshold { get; private set; }
+    public bool IsActive { get; private set; } = true;
 
     public Prescription Prescription { get; private set; }
     public MedicationCatalog MedicationCatalog { get; private set; }
@@ -21,6 +22,7 @@ public class Medication
     protected Medication()
     {
         Dose = string.Empty;
+        IsActive = true;
         Prescription = null!;
         MedicationCatalog = null!;
         DoseSchedules = new List<DoseSchedule>();
@@ -43,6 +45,11 @@ public class Medication
         StockCount = stockCount;
         StockAlertThreshold = stockAlertThreshold;
         DoseSchedules = new List<DoseSchedule>();
+    }
+
+    public void Cancel()
+    {
+        IsActive = false;
     }
 
     public void Update(

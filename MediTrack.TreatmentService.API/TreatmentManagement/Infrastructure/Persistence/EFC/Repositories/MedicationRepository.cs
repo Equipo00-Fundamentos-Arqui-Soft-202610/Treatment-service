@@ -17,6 +17,7 @@ public class MedicationRepository : IMedicationRepository
     public async Task<Medication?> FindByIdAsync(int id)
     {
         return await _context.Medications
+            .Include(medication => medication.Prescription)
             .FirstOrDefaultAsync(medication => medication.Id == id);
     }
     

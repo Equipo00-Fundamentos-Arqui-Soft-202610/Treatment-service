@@ -57,6 +57,7 @@ public class MedicationsController : ControllerBase
                 medication.EndDate,
                 medication.StockCount,
                 medication.StockAlertThreshold,
+                medication.IsActive,
             });
         }
         catch (Exception ex)
@@ -93,6 +94,7 @@ public class MedicationsController : ControllerBase
                 medication.EndDate,
                 medication.StockCount,
                 medication.StockAlertThreshold,
+                medication.IsActive,
             });
         }
         catch (Exception ex)

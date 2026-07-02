@@ -12,5 +12,6 @@ public record MedicationResource(
     DateTime? EndDate,
     int StockCount,
     int StockAlertThreshold,
+    bool IsActive,
     List<string> ScheduledTimes
 );
