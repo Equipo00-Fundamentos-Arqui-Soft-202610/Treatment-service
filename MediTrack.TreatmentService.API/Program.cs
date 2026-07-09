@@ -1,3 +1,4 @@
+using System.Text;
 using MediTrack.TreatmentService.API.TreatmentManagement.Application.Internal.CommandServices;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Repositories;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Services;
@@ -6,7 +7,9 @@ using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persiste
 using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC.Repositories;
 using MediTrack.TreatmentService.API.TreatmentManagement.Application.Internal.OutboundServices;
 using MediTrack.TreatmentService.API.TreatmentManagement.Application.Internal.QueryServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +20,29 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// JWT authentication
+var jwtSection = builder.Configuration.GetSection("Jwt");
+var signingKey = jwtSection["Key"]
+    ?? throw new InvalidOperationException("Falta la clave de firma JWT en 'Jwt:Key'.");
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtSection["Issuer"],
+            ValidateAudience = true,
+            ValidAudience = jwtSection["Audience"],
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey)),
+            ClockSkew = TimeSpan.FromSeconds(30)
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 // Database
 
@@ -68,6 +94,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

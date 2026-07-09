@@ -1,12 +1,14 @@
 ﻿using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Services;
 using MediTrack.TreatmentService.API.TreatmentManagement.Interfaces.REST.Resources;
 using MediTrack.TreatmentService.API.TreatmentManagement.Interfaces.REST.Transform;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediTrack.TreatmentService.API.TreatmentManagement.Interfaces.REST.Controllers;
 
 [ApiController]
 [Route("api/v1/prescriptions")]
+[Authorize]
 public class PrescriptionsController : ControllerBase
 {
     private readonly IPrescriptionCommandService _prescriptionCommandService;
@@ -17,6 +19,7 @@ public class PrescriptionsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "TechnicalStaff")]
     public async Task<IActionResult> CreatePrescription([FromBody] CreatePrescriptionResource resource)
     {
         try
