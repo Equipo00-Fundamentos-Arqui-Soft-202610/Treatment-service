@@ -37,7 +37,7 @@ namespace MediTrack.TreatmentService.API.Migrations
                 name: "processed_events",
                 columns: table => new
                 {
-                    EventId = table.Column<Guid>(type: "char(36)", nullable: false),
+                    EventId = table.Column<byte[]>(type: "binary(16)", nullable: false),
                     EventType = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     ProcessedAtUtc = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },

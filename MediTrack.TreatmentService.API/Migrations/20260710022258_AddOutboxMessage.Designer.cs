@@ -166,9 +166,9 @@ namespace MediTrack.TreatmentService.API.Migrations
 
             modelBuilder.Entity("MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC.OutboxMessage", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<byte[]>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("binary(16)");
 
                     b.Property<int>("Attempts")
                         .HasColumnType("int");
@@ -201,9 +201,9 @@ namespace MediTrack.TreatmentService.API.Migrations
 
             modelBuilder.Entity("MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC.ProcessedEvent", b =>
                 {
-                    b.Property<Guid>("EventId")
+                    b.Property<byte[]>("EventId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("binary(16)");
 
                     b.Property<string>("EventType")
                         .IsRequired()

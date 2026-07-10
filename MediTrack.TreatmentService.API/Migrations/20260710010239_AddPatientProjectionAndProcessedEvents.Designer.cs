@@ -166,9 +166,9 @@ namespace MediTrack.TreatmentService.API.Migrations
 
             modelBuilder.Entity("MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC.ProcessedEvent", b =>
                 {
-                    b.Property<Guid>("EventId")
+                    b.Property<byte[]>("EventId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("binary(16)");
 
                     b.Property<string>("EventType")
                         .IsRequired()
