@@ -1,5 +1,6 @@
 using System.Text;
 using MediTrack.TreatmentService.API.TreatmentManagement.Application.Internal.CommandServices;
+using MediTrack.TreatmentService.API.TreatmentManagement.Application.Internal.EventHandlers;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Repositories;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Services;
 using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Messaging;
@@ -62,9 +63,9 @@ builder.Services.AddScoped<IMedicationCatalogCommandService, MedicationCatalogCo
 builder.Services.AddScoped<IMedicationCatalogQueryService, MedicationCatalogQueryService>();
 
 
-builder.Services.AddScoped<IPatientValidationClient, MockPatientValidationClient>();
+builder.Services.AddScoped<IPatientValidationClient, PatientValidationClient>();
 
-builder.Services.AddScoped<IPatientSearchClient, MockPatientSearchClient>();
+builder.Services.AddScoped<IPatientSearchClient, PatientSearchClient>();
 builder.Services.AddScoped<IPatientQueryService, PatientQueryService>();
 
 builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
@@ -74,6 +75,8 @@ builder.Services.AddScoped<IMedicationQueryService, MedicationQueryService>();
 
 // Messaging
 builder.Services.AddSingleton<IEventPublisher, RabbitMqPublisher>();
+builder.Services.AddScoped<PacienteRegistradoEventHandler>();
+builder.Services.AddHostedService<PacienteRegistradoConsumerHostedService>();
 
 var app = builder.Build();
 
