@@ -1,4 +1,5 @@
 ﻿using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Services;
+using MediTrack.TreatmentService.API.TreatmentManagement.Interfaces.REST.Filters;
 using MediTrack.TreatmentService.API.TreatmentManagement.Interfaces.REST.Resources;
 using MediTrack.TreatmentService.API.TreatmentManagement.Interfaces.REST.Transform;
 using Microsoft.AspNetCore.Authorization;
@@ -20,6 +21,7 @@ public class PrescriptionsController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "TechnicalStaff")]
+    [TypeFilter(typeof(IdempotencyFilterAttribute))]
     public async Task<IActionResult> CreatePrescription([FromBody] CreatePrescriptionResource resource)
     {
         try
