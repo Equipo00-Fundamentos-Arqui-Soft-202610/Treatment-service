@@ -11,6 +11,8 @@ public class Patient
     public int Id { get; private set; }
     public string FullName { get; private set; }
     public string Email { get; private set; }
+    public string? Dni { get; private set; }
+    public DateTime? DateOfBirth { get; private set; }
     public DateTime RegisteredAtUtc { get; private set; }
 
     protected Patient()
@@ -19,11 +21,13 @@ public class Patient
         Email = string.Empty;
     }
 
-    public Patient(int id, string fullName, string email, DateTime registeredAtUtc)
+    public Patient(int id, string fullName, string email, DateTime registeredAtUtc, string? dni = null, DateTime? dateOfBirth = null)
     {
         Id = id;
         FullName = fullName;
         Email = email;
         RegisteredAtUtc = registeredAtUtc;
+        Dni = dni;
+        DateOfBirth = dateOfBirth;
     }
 }

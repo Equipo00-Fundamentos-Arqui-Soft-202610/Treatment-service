@@ -26,6 +26,12 @@ public class PatientSearchClient : IPatientSearchClient
                      || p.Email.ToLower().Contains(normalizedQuery))
             .ToListAsync();
 
-        return patients.Select(p => new PatientSearchResultResource(p.Id, p.FullName, p.Email));
+        return patients.Select(p =>
+        {
+            int? age = p.DateOfBirth.HasValue
+                ? (int)((DateTime.UtcNow - p.DateOfBirth.Value).TotalDays / 365.25)
+                : null;
+            return new PatientSearchResultResource(p.Id, p.FullName, p.Email, p.Dni, age);
+        });
     }
 }
