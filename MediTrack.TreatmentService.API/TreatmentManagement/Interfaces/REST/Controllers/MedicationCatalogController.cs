@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Queries;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Services;
@@ -8,6 +9,7 @@ namespace MediTrack.TreatmentService.API.TreatmentManagement.Interfaces.REST.Con
 
 [ApiController]
 [Route("api/v1/medication-catalog")]
+[Authorize]
 public class MedicationCatalogController : ControllerBase
 {
     private readonly IMedicationCatalogCommandService _commandService;

@@ -3,6 +3,7 @@ using System;
 using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediTrack.TreatmentService.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260710010239_AddPatientProjectionAndProcessedEvents")]
+    partial class AddPatientProjectionAndProcessedEvents
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,41 +162,6 @@ namespace MediTrack.TreatmentService.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("patients", (string)null);
-                });
-
-            modelBuilder.Entity("MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC.OutboxMessage", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("Attempts")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EventType")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("LastError")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<DateTime>("OccurredAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Payload")
-                        .IsRequired()
-                        .HasColumnType("json");
-
-                    b.Property<DateTime?>("ProcessedAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProcessedAtUtc");
-
-                    b.ToTable("outbox_message", (string)null);
                 });
 
             modelBuilder.Entity("MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC.ProcessedEvent", b =>

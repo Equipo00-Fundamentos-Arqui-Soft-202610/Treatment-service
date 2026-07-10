@@ -1,5 +1,6 @@
-﻿using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Aggregates;
+using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Aggregates;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Entities;
+using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC;
 using Microsoft.EntityFrameworkCore;
 
 namespace MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC.Configuration;
@@ -15,6 +16,9 @@ public class AppDbContext : DbContext
     public DbSet<Medication> Medications => Set<Medication>();
     public DbSet<DoseSchedule> DoseSchedules => Set<DoseSchedule>();
     public DbSet<MedicationCatalog> MedicationCatalog => Set<MedicationCatalog>();
+    public DbSet<Patient> Patients => Set<Patient>();
+    public DbSet<ProcessedEvent> ProcessedEvents => Set<ProcessedEvent>();
+    public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -75,7 +79,9 @@ public class AppDbContext : DbContext
 
             entity.Property(m => m.StockAlertThreshold)
                 .IsRequired();
-            
+
+            entity.Property(m => m.IsActive)
+                .IsRequired();
 
             entity.HasOne(m => m.MedicationCatalog)
                 .WithMany(c => c.Medications)
@@ -122,7 +128,63 @@ public class AppDbContext : DbContext
             entity.Property(mc => mc.Category)
                 .HasMaxLength(100);
         });
-        
-        
+
+        builder.Entity<Patient>(entity =>
+        {
+            entity.ToTable("patients");
+
+            entity.HasKey(p => p.Id);
+
+            entity.Property(p => p.Id)
+                .ValueGeneratedNever();
+
+            entity.Property(p => p.FullName)
+                .HasMaxLength(200)
+                .IsRequired();
+
+            entity.Property(p => p.Email)
+                .HasMaxLength(200)
+                .IsRequired();
+
+            entity.Property(p => p.RegisteredAtUtc)
+                .IsRequired();
+        });
+
+        builder.Entity<ProcessedEvent>(entity =>
+        {
+            entity.ToTable("processed_events");
+
+            entity.HasKey(e => e.EventId);
+
+            entity.Property(e => e.EventType)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            entity.Property(e => e.ProcessedAtUtc)
+                .IsRequired();
+        });
+
+        builder.Entity<OutboxMessage>(entity =>
+        {
+            entity.ToTable("outbox_message");
+
+            entity.HasKey(m => m.Id);
+
+            entity.Property(m => m.EventType)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            entity.Property(m => m.Payload)
+                .HasColumnType("json")
+                .IsRequired();
+
+            entity.Property(m => m.OccurredAtUtc)
+                .IsRequired();
+
+            entity.Property(m => m.LastError)
+                .HasMaxLength(500);
+
+            entity.HasIndex(m => m.ProcessedAtUtc);
+        });
     }
 }

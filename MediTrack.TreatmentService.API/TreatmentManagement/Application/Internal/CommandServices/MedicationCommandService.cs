@@ -1,17 +1,26 @@
-﻿using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Commands;
+﻿using MediTrack.TreatmentService.API.TreatmentManagement.Application.OutboundEvents;
+using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Commands;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Model.Entities;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Repositories;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Services;
+using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Messaging;
 
 namespace MediTrack.TreatmentService.API.TreatmentManagement.Application.Internal.CommandServices;
 
 public class MedicationCommandService : IMedicationCommandService
 {
     private readonly IMedicationRepository _medicationRepository;
+    private readonly IEventPublisher _eventPublisher;
+    private readonly ILogger<MedicationCommandService> _logger;
 
-    public MedicationCommandService(IMedicationRepository medicationRepository)
+    public MedicationCommandService(
+        IMedicationRepository medicationRepository,
+        IEventPublisher eventPublisher,
+        ILogger<MedicationCommandService> logger)
     {
         _medicationRepository = medicationRepository;
+        _eventPublisher = eventPublisher;
+        _logger = logger;
     }
 
     public async Task<Medication?> Handle(UpdateMedicationCommand command)
@@ -37,7 +46,47 @@ public class MedicationCommandService : IMedicationCommandService
 
         await _medicationRepository.UpdateAsync(medication);
 
+        await PublishMedicationUpdatedEventAsync(medication);
+
         return medication;
+    }
+
+    private async Task PublishMedicationUpdatedEventAsync(Medication medication)
+    {
+        try
+        {
+            await _eventPublisher.PublishAsync("MedicationUpdated", new MedicationUpdatedEvent
+            {
+                MedicationId = medication.Id,
+                PatientId = medication.Prescription.PatientId,
+                Dose = medication.Dose,
+                FrequencyHours = medication.FrequencyHours,
+                StartDate = medication.StartDate,
+                EndDate = medication.EndDate,
+                StockCount = medication.StockCount,
+                StockAlertThreshold = medication.StockAlertThreshold
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to publish MedicationUpdated event for MedicationId {MedicationId}", medication.Id);
+        }
+    }
+
+    private async Task PublishMedicationCancelledEventAsync(Medication medication)
+    {
+        try
+        {
+            await _eventPublisher.PublishAsync("MedicationCancelled", new MedicationCancelledEvent
+            {
+                MedicationId = medication.Id,
+                PatientId = medication.Prescription.PatientId
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to publish MedicationCancelled event for MedicationId {MedicationId}", medication.Id);
+        }
     }
 
     public async Task<Medication?> Handle(CancelMedicationCommand command)
@@ -49,9 +98,12 @@ public class MedicationCommandService : IMedicationCommandService
 
         if (medication is null)
             throw new Exception("Medication not found");
-        
+
+        medication.Cancel();
 
         await _medicationRepository.UpdateAsync(medication);
+
+        await PublishMedicationCancelledEventAsync(medication);
 
         return medication;
     }

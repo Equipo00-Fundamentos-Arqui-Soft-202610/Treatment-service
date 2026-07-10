@@ -5,7 +5,8 @@ namespace MediTrack.TreatmentService.API.TreatmentManagement.Interfaces.REST.Tra
 
 public static class UpdateMedicationCommandFromResourceAssembler
 {
-    public static UpdateMedicationCommand ToCommandFromResource(int medicationId, UpdateMedicationResource resource)
+    public static UpdateMedicationCommand ToCommandFromResource(
+        int medicationId, UpdateMedicationResource resource, bool isAuthorizedByTechnicalStaff)
     {
         return new UpdateMedicationCommand(
             medicationId,
@@ -15,7 +16,7 @@ public static class UpdateMedicationCommandFromResourceAssembler
             resource.EndDate,
             resource.StockCount,
             resource.StockAlertThreshold,
-            resource.AuthorizedByTechnicalStaff
+            isAuthorizedByTechnicalStaff
         );
     }
 }
