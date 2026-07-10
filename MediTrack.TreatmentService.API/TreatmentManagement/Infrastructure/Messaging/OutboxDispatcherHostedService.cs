@@ -1,4 +1,5 @@
 using System.Text;
+using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC;
 using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persistence.EFC.Configuration;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
@@ -13,6 +14,7 @@ namespace MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Mess
 public sealed class OutboxDispatcherHostedService : BackgroundService
 {
     private const int BatchSize = 50;
+    private const int MaxAttempts = 10;
     private static readonly TimeSpan PollingInterval = TimeSpan.FromSeconds(10);
 
     private readonly IServiceScopeFactory _scopeFactory;
@@ -50,7 +52,7 @@ public sealed class OutboxDispatcherHostedService : BackgroundService
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
         var pending = await context.OutboxMessages
-            .Where(m => m.ProcessedAtUtc == null)
+            .Where(m => m.ProcessedAtUtc == null && m.Attempts < MaxAttempts)
             .OrderBy(m => m.OccurredAtUtc)
             .Take(BatchSize)
             .ToListAsync(cancellationToken);
@@ -100,6 +102,7 @@ public sealed class OutboxDispatcherHostedService : BackgroundService
                 {
                     message.Attempts++;
                     message.LastError = "Sin cola/binding activo en el momento del publish; se reintentará.";
+                    LogIfAbandoned(message);
                 }
                 else
                 {
@@ -111,11 +114,27 @@ public sealed class OutboxDispatcherHostedService : BackgroundService
                 message.Attempts++;
                 message.LastError = ex.Message;
                 _logger.LogError(ex, "No se pudo publicar el mensaje de Outbox {MessageId}.", message.Id);
+                LogIfAbandoned(message);
             }
         }
 
         await context.SaveChangesAsync(cancellationToken);
         _logger.LogInformation(
             "Publicados {Count} mensajes del Outbox.", pending.Count(m => m.ProcessedAtUtc != null));
+    }
+
+    /// <summary>
+    /// Evita el reintento infinito de un mensaje "veneno" (p. ej. un EventType sin
+    /// ningún binding activo): tras <see cref="MaxAttempts"/> intentos se deja de
+    /// reintentar y se registra una alerta explícita para investigación manual.
+    /// </summary>
+    private void LogIfAbandoned(OutboxMessage message)
+    {
+        if (message.Attempts >= MaxAttempts)
+        {
+            _logger.LogError(
+                "Mensaje de Outbox {MessageId} ({EventType}) alcanzó el máximo de {MaxAttempts} intentos; se deja de reintentar. Último error: {LastError}",
+                message.Id, message.EventType, MaxAttempts, message.LastError);
+        }
     }
 }
