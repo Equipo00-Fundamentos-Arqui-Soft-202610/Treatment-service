@@ -88,6 +88,8 @@ builder.Services.AddScoped<IEventPublisher, OutboxEventPublisher>();
 builder.Services.AddHostedService<OutboxDispatcherHostedService>();
 builder.Services.AddScoped<PacienteRegistradoEventHandler>();
 builder.Services.AddHostedService<PacienteRegistradoConsumerHostedService>();
+builder.Services.AddScoped<PerfilActualizadoEventHandler>();
+builder.Services.AddHostedService<PerfilActualizadoConsumerHostedService>();
 
 var app = builder.Build();
 

@@ -30,4 +30,17 @@ public class Patient
         Dni = dni;
         DateOfBirth = dateOfBirth;
     }
+
+    /// <summary>Aplica un <c>PerfilActualizado</c>: mantiene la proyección al día con ediciones posteriores al registro.</summary>
+    public void UpdateProfile(string fullName, string email, string? dni, DateTime? dateOfBirth)
+    {
+        FullName = fullName;
+        Email = email;
+
+        if (dni is not null)
+            Dni = dni;
+
+        if (dateOfBirth is not null)
+            DateOfBirth = dateOfBirth;
+    }
 }
