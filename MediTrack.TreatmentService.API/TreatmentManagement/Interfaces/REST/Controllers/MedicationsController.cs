@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MediTrack.TreatmentService.API.TreatmentManagement.Domain.Services;
 using MediTrack.TreatmentService.API.TreatmentManagement.Interfaces.REST.Resources;
 using MediTrack.TreatmentService.API.TreatmentManagement.Interfaces.REST.Transform;
@@ -7,6 +8,7 @@ namespace MediTrack.TreatmentService.API.TreatmentManagement.Interfaces.REST.Con
 
 [ApiController]
 [Route("api/v1/medications")]
+[Authorize]
 public class MedicationsController : ControllerBase
 {
     private readonly IMedicationCommandService _medicationCommandService;
@@ -33,13 +35,15 @@ public class MedicationsController : ControllerBase
     }
 
     [HttpPut("{medicationId:int}")]
+    [Authorize(Roles = "TechnicalStaff")]
     public async Task<IActionResult> UpdateMedication(
         int medicationId,
         [FromBody] UpdateMedicationResource resource)
     {
         try
         {
-            var command = UpdateMedicationCommandFromResourceAssembler.ToCommandFromResource(medicationId, resource);
+            var command = UpdateMedicationCommandFromResourceAssembler.ToCommandFromResource(
+                medicationId, resource, User.IsInRole("TechnicalStaff"));
 
             var medication = await _medicationCommandService.Handle(command);
 
@@ -70,13 +74,13 @@ public class MedicationsController : ControllerBase
     }
 
     [HttpPatch("{medicationId:int}/cancel")]
-    public async Task<IActionResult> CancelMedication(
-        int medicationId,
-        [FromBody] CancelMedicationResource resource)
+    [Authorize(Roles = "TechnicalStaff")]
+    public async Task<IActionResult> CancelMedication(int medicationId)
     {
         try
         {
-            var command = CancelMedicationCommandFromResourceAssembler.ToCommandFromResource(medicationId, resource);
+            var command = CancelMedicationCommandFromResourceAssembler.ToCommandFromResource(
+                medicationId, User.IsInRole("TechnicalStaff"));
 
             var medication = await _medicationCommandService.Handle(command);
 

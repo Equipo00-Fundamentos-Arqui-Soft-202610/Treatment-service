@@ -6,6 +6,5 @@ public record UpdateMedicationResource(
     DateTime StartDate,
     DateTime? EndDate,
     int StockCount,
-    int StockAlertThreshold,
-    bool AuthorizedByTechnicalStaff
+    int StockAlertThreshold
 );
