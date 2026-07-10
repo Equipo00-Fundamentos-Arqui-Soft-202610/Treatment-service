@@ -71,6 +71,16 @@ public sealed class OutboxDispatcherHostedService : BackgroundService
         using var connection = factory.CreateConnection();
         using var channel = connection.CreateModel();
         channel.ExchangeDeclare(exchange: exchangeName, type: "topic", durable: true, autoDelete: false);
+        channel.ConfirmSelect();
+
+        var unroutableMessageIds = new HashSet<string>();
+        channel.BasicReturn += (_, args) =>
+        {
+            unroutableMessageIds.Add(args.BasicProperties.MessageId);
+            _logger.LogError(
+                "Mensaje de Outbox {MessageId} no pudo ser ruteado (sin binding activo): {ReplyText}",
+                args.BasicProperties.MessageId, args.ReplyText);
+        };
 
         foreach (var message in pending)
         {
@@ -83,8 +93,18 @@ public sealed class OutboxDispatcherHostedService : BackgroundService
                 properties.Type = message.EventType;
                 properties.ContentType = "application/json";
 
-                channel.BasicPublish(exchangeName, message.EventType, properties, body);
-                message.ProcessedAtUtc = DateTime.UtcNow;
+                channel.BasicPublish(exchangeName, message.EventType, mandatory: true, properties, body);
+                channel.WaitForConfirmsOrDie(TimeSpan.FromSeconds(5));
+
+                if (unroutableMessageIds.Contains(properties.MessageId))
+                {
+                    message.Attempts++;
+                    message.LastError = "Sin cola/binding activo en el momento del publish; se reintentará.";
+                }
+                else
+                {
+                    message.ProcessedAtUtc = DateTime.UtcNow;
+                }
             }
             catch (Exception ex)
             {
