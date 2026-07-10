@@ -30,7 +30,7 @@ public sealed class PacienteRegistradoEventHandler
             return;
         }
 
-        var patient = new Patient(@event.PatientId, @event.FullName, @event.Email, @event.OccurredAtUtc);
+        var patient = new Patient(@event.PatientId, @event.FullName, @event.Email, @event.OccurredAtUtc, @event.Dni, @event.DateOfBirth);
         await _context.Patients.AddAsync(patient, cancellationToken);
 
         _logger.LogInformation(

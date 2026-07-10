@@ -3,5 +3,7 @@
 public record PatientSearchResultResource(
     int PatientId,
     string FullName,
-    string Email
+    string Email,
+    string? Dni,
+    int? Age
 );

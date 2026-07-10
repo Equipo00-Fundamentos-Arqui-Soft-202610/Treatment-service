@@ -147,6 +147,11 @@ public class AppDbContext : DbContext
                 .HasMaxLength(200)
                 .IsRequired();
 
+            entity.Property(p => p.Dni)
+                .HasMaxLength(20);
+
+            entity.Property(p => p.DateOfBirth);
+
             entity.Property(p => p.RegisteredAtUtc)
                 .IsRequired();
         });
