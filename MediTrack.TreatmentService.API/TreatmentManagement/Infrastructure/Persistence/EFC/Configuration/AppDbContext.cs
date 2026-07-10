@@ -156,6 +156,10 @@ public class AppDbContext : DbContext
 
             entity.HasKey(e => e.EventId);
 
+            entity.Property(e => e.EventId)
+                .HasConversion(g => g.ToByteArray(), b => new Guid(b))
+                .HasColumnType("binary(16)");
+
             entity.Property(e => e.EventType)
                 .HasMaxLength(100)
                 .IsRequired();
@@ -169,6 +173,10 @@ public class AppDbContext : DbContext
             entity.ToTable("outbox_message");
 
             entity.HasKey(m => m.Id);
+
+            entity.Property(m => m.Id)
+                .HasConversion(g => g.ToByteArray(), b => new Guid(b))
+                .HasColumnType("binary(16)");
 
             entity.Property(m => m.EventType)
                 .HasMaxLength(100)
