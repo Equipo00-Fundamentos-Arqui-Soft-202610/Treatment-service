@@ -3,6 +3,7 @@ using MediTrack.TreatmentService.API.TreatmentManagement.Infrastructure.Persiste
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace MediTrack.TreatmentService.API.TreatmentManagement.Interfaces.REST.Filters;
@@ -15,6 +16,16 @@ namespace MediTrack.TreatmentService.API.TreatmentManagement.Interfaces.REST.Fil
 /// </summary>
 public class IdempotencyFilterAttribute : Attribute, IAsyncActionFilter
 {
+    private readonly JsonSerializerOptions _jsonOptions;
+
+    public IdempotencyFilterAttribute(IOptions<JsonOptions> jsonOptions)
+    {
+        // Usa las mismas opciones (camelCase) con las que ASP.NET Core serializa
+        // la respuesta real, para que la respuesta cacheada y la original tengan
+        // exactamente el mismo formato de JSON.
+        _jsonOptions = jsonOptions.Value.JsonSerializerOptions;
+    }
+
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         var request = context.HttpContext.Request;
@@ -49,7 +60,7 @@ public class IdempotencyFilterAttribute : Attribute, IAsyncActionFilter
                 Key = key,
                 Endpoint = endpoint,
                 ResponseStatusCode = objectResult.StatusCode ?? 200,
-                ResponseBody = JsonSerializer.Serialize(objectResult.Value),
+                ResponseBody = JsonSerializer.Serialize(objectResult.Value, _jsonOptions),
                 CreatedAtUtc = DateTime.UtcNow
             });
             await dbContext.SaveChangesAsync();
