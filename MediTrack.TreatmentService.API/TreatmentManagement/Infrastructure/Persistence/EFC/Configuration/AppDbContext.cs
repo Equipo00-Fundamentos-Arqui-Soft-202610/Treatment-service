@@ -18,6 +18,7 @@ public class AppDbContext : DbContext
     public DbSet<MedicationCatalog> MedicationCatalog => Set<MedicationCatalog>();
     public DbSet<Patient> Patients => Set<Patient>();
     public DbSet<ProcessedEvent> ProcessedEvents => Set<ProcessedEvent>();
+    public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -161,6 +162,29 @@ public class AppDbContext : DbContext
 
             entity.Property(e => e.ProcessedAtUtc)
                 .IsRequired();
+        });
+
+        builder.Entity<OutboxMessage>(entity =>
+        {
+            entity.ToTable("outbox_message");
+
+            entity.HasKey(m => m.Id);
+
+            entity.Property(m => m.EventType)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            entity.Property(m => m.Payload)
+                .HasColumnType("json")
+                .IsRequired();
+
+            entity.Property(m => m.OccurredAtUtc)
+                .IsRequired();
+
+            entity.Property(m => m.LastError)
+                .HasMaxLength(500);
+
+            entity.HasIndex(m => m.ProcessedAtUtc);
         });
     }
 }
