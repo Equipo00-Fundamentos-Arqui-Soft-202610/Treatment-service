@@ -19,12 +19,14 @@ public class PatientSearchClient : IPatientSearchClient
 
     public async Task<IEnumerable<PatientSearchResultResource>> SearchAsync(string query)
     {
-        var normalizedQuery = query.Trim().ToLower();
+        var parts = query.Split(" - ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var normalizedParts = parts.Select(p => p.Trim().ToLower()).ToList();
 
         var patients = await _context.Patients
-            .Where(p => p.FullName.ToLower().Contains(normalizedQuery)
-                     || p.Email.ToLower().Contains(normalizedQuery)
-                     || (p.Dni != null && p.Dni.ToLower().Contains(normalizedQuery)))
+            .Where(p => normalizedParts.Any(np =>
+                p.FullName.ToLower().Contains(np)
+                || p.Email.ToLower().Contains(np)
+                || (p.Dni != null && p.Dni.ToLower().Contains(np))))
             .ToListAsync();
 
         return patients.Select(p =>
